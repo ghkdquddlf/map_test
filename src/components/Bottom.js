@@ -1,20 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function Bottom() {
+  const [openSection, setOpenSection] = useState(null);
+
+  const toggleSection = (section) => {
+    if (openSection === section) {
+      setOpenSection(null);
+    } else {
+      setOpenSection(section);
+    }
+  };
+
+  const sections = [
+    { id: 'management', title: '관리기관', content: ['기관 1', '기관 2', '기관 3'] },
+    { id: 'participant', title: '참여기관', content: ['참여기관 1', '참여기관 2', '참여기관 3'] },
+    { id: 'related', title: '유관기관', content: ['유관기관 1', '유관기관 2', '유관기관 3'] },
+    { id: 'sites', title: '관련사이트', content: ['사이트 1', '사이트 2', '사이트 3'] }
+  ];
+
   return (
     <footer style={styles.footer}>
       <div style={styles.container}>
-        <div style={styles.links}>
-          <button style={styles.button}>관리기관</button>
-          <button style={styles.button}>참여기관</button>
-          <button style={styles.button}>유관기관</button>
-          <button style={styles.button}>관련사이트</button>
+        <div style={styles.accordionContainer}>
+          {sections.map((section, index) => (
+            <div 
+              key={section.id} 
+              style={{
+                ...styles.section,
+                borderLeft: index === 0 ? 'none' : '1px solid #eee'
+              }}
+            >
+              <button
+                style={styles.sectionHeader}
+                onClick={() => toggleSection(section.id)}
+              >
+                {section.title}
+                <span style={styles.plusIcon}>{openSection === section.id ? '-' : '+'}</span>
+              </button>
+              {openSection === section.id && (
+                <div style={styles.sectionContent}>
+                  {section.content.map((item, index) => (
+                    <div 
+                      key={index} 
+                      style={styles.contentItem}
+                      onMouseEnter={(e) => e.target.style.color = '#333'}
+                      onMouseLeave={(e) => e.target.style.color = '#666'}
+                    >
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-        <div style={styles.content}>
-          <img src="/keti.png" alt="KETI Logo" style={styles.logo} />
+        <div style={styles.bottomInfo}>
+          <img src="/Keti.ko.png" alt="KETI Logo" style={styles.logo} />
           <div style={styles.info}>
-            <div style={styles.title}>한국전자기술연구원</div>
-            <div style={styles.subtitle}>Korea Electronics Technology Institute</div>
             <div style={styles.contact}>
               <p>(ㅇㅇㅇㅇㅇ) ㅇㅇㅇ ㅇㅇㅇ ㅇㅇㅇ ㅇㅇㅇ</p>
               <p>대표전화 000-000-0000 (평일 09시~18시)</p>
@@ -28,57 +70,73 @@ function Bottom() {
 
 const styles = {
   footer: {
-    backgroundColor: '#f5f5f5',
-    padding: '2rem 0',
-    marginTop: '2rem',
+    backgroundColor: '#f8f8f8',
+    width: '100%',
     borderTop: '1px solid #eee'
   },
   container: {
     maxWidth: '1200px',
     margin: '0 auto',
-    padding: '0 2rem'
   },
-  content: {
+  accordionContainer: {
+    display: 'flex',
+    borderBottom: '1px solid #eee',
+  },
+  section: {
+    flex: '1',
+    position: 'relative',
+  },
+  sectionHeader: {
+    width: '100%',
+    padding: '15px 20px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    fontSize: '14px',
+    color: '#333',
+    textAlign: 'left'
+  },
+  plusIcon: {
+    fontSize: '18px',
+    color: '#666',
+  },
+  sectionContent: {
+    position: 'absolute',
+    top: '100%',
+    left: '0',
+    right: '0',
+    padding: '15px 20px',
+    backgroundColor: '#f8f8f8',
+    borderTop: '1px solid #eee',
+    zIndex: 10,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  },
+  contentItem: {
+    padding: '8px 0',
+    color: '#666',
+    fontSize: '14px',
+    cursor: 'pointer',
+  },
+  bottomInfo: {
     display: 'flex',
     alignItems: 'center',
-    marginBottom: '1.5rem'
+    padding: '20px',
+    backgroundColor: '#f8f8f8',
   },
   logo: {
     height: '40px',
-    marginRight: '2rem'
+    marginRight: '20px',
   },
   info: {
-    color: '#666'
-  },
-  title: {
-    fontSize: '1.1rem',
-    fontWeight: '600',
-    marginBottom: '0.25rem'
-  },
-  subtitle: {
-    fontSize: '0.9rem',
-    marginBottom: '0.5rem'
+    color: '#666',
   },
   contact: {
-    fontSize: '0.85rem',
-    lineHeight: '1.5'
+    fontSize: '13px',
+    lineHeight: '1.5',
   },
-  links: {
-    display: 'flex',
-    gap: '1rem'
-  },
-  button: {
-    padding: '0.5rem 1rem',
-    backgroundColor: 'transparent',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    color: '#666',
-    fontSize: '0.9rem',
-    ':hover': {
-      backgroundColor: '#f0f0f0'
-    }
-  }
 };
 
 export default Bottom; 
