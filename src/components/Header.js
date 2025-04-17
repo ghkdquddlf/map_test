@@ -18,14 +18,12 @@ function Header() {
 
 const styles = {
   header: {
-    backgroundColor: '#ffffff',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     padding: '1rem',
-    position: 'fixed',
+    /*position: 'fixed', -> 상단바를 고정할지 안할지 결정*/ 
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 1000
+    borderBottom: '1px solid #E2E8F0',
   },
   nav: {
     display: 'flex',
@@ -45,14 +43,9 @@ const styles = {
   },
   link: {
     textDecoration: 'none',
-    color: '#666',
-    fontWeight: '500',
+    color: '#000000',
+    fontWeight: '1000',
     padding: '0.5rem',
-    borderRadius: '4px',
-    transition: 'background-color 0.2s',
-    ':hover': {
-      backgroundColor: '#f0f0f0'
-    }
   }
 };
 

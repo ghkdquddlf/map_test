@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Bottom from '../components/Bottom';
-import { FaQuestionCircle } from 'react-icons/fa';
-import { Tooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
+import PageContainer from '../components/PageContainer';
 
 function UploadHistory() {
   const [selectedItems, setSelectedItems] = useState({});
@@ -42,28 +40,17 @@ function UploadHistory() {
   ];
 
   return (
-    <div style={styles.wrapper}>
-      <main style={styles.main}>
-        <div style={styles.dashboardHeader}>
-          <div style={styles.titleWrapper}>
-            <h1 style={styles.dashboardTitle}>내역 대시보드</h1>
-            <FaQuestionCircle 
-              style={styles.questionIcon} 
-              data-tooltip-id="upload-history-tooltip"
-            />
-            <Tooltip 
-              id="upload-history-tooltip"
-              place="right"
-              content="올려서 작업 내역의 지도를 확인할 수 있습니다."
-              style={styles.tooltip}
-            />
-          </div>
-        </div>
+    <>
+      <PageContainer 
+        title="내역 대시보드"
+        tooltipContent="올려서 작업 내역의 지도를 확인할 수 있습니다."
+      >
         <div style={styles.uploadHistorySection}>
           <div style={styles.header}>
             <h2 style={styles.title}>
               업로드 내역
             </h2>
+            <span style={styles.description}>클릭시 해당 내역의 지도를 확인할 수 있습니다.</span>
           </div>
           <div style={styles.tableContainer}>
             <table style={styles.table}>
@@ -105,44 +92,23 @@ function UploadHistory() {
             </table>
           </div>
         </div>
-      </main>
+      </PageContainer>
       <Bottom />
-    </div>
+    </>
   );
 }
 
 const styles = {
-  wrapper: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: '#F8FAFC',
-  },
-  main: {
-    flex: 1,
-    padding: '2rem',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    width: '100%',
-    boxSizing: 'border-box',
-    marginTop: '4.3rem',
-    display: 'flex',
-    flexDirection: 'column',
-  },
   uploadHistorySection: {
-    backgroundColor: '#F3F8FB',
-    borderRadius: '12px',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-    overflow: 'hidden',
-    minHeight: 'calc(100vh - 21rem)', // 상단 여백, 패딩, 하단 바 높이 등을 고려한 값
+    padding: '1rem',
   },
   header: {
     padding: '1.3rem',
     marginLeft: '4rem',
     marginTop: '1rem',
     display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
+    alignItems: 'center',
+    gap: '1rem',
   },
   title: {
     display: 'flex',
@@ -152,24 +118,10 @@ const styles = {
     fontWeight: '600',
     color: '#1E293B',
   },
-  dashboardHeader: {
-    marginBottom: '1rem',
-    padding: '0.5rem 0',
-  },
-  titleWrapper: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-  },
-  dashboardTitle: {
-    margin: 0,
-    fontSize: '1.75rem',
-    fontWeight: '600',
-    color: '#14274E',
-  },
-  questionIcon: {
+  description: {
+    fontSize: '0.9rem',
     color: '#64748B',
-    fontSize: '1.25rem',
+    fontWeight: '400',
   },
   tableContainer: {
     overflowX: 'auto',
@@ -203,7 +155,6 @@ const styles = {
     borderBottomRightRadius: '20px',
   },
   tr: {
-    borderBottom: '1px solid #E2E8F0',
     cursor: 'pointer',
     transition: 'background-color 0.2s ease',
     textAlign: 'center',
@@ -216,11 +167,13 @@ const styles = {
     fontSize: '0.875rem',
     color: '#334155',
     whiteSpace: 'nowrap',
+    borderBottom: '1px solid #E2E8F0',
   },
   checkboxCell: {
     padding: '0.75rem 1rem',
     width: '40px',
-    textAlign: 'center'
+    textAlign: 'center',
+    borderBottom: '1px solid #E2E8F0'
   },
   checkbox: {
     cursor: 'pointer',

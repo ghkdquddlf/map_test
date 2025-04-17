@@ -8,7 +8,7 @@ import UploadHistory from './pages/UploadHistory';
 function App() {
   return (
     <Router>
-      <div>
+      <div className="container">
         <Header />
         <Routes>
           <Route path="/upload" element={<FileUpload />} />

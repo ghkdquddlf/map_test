@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 function Bottom() {
   const [openSection, setOpenSection] = useState(null);
+  const sectionRefs = useRef({});
 
   const toggleSection = (section) => {
     if (openSection === section) {
@@ -11,6 +12,15 @@ function Bottom() {
     }
   };
 
+  useEffect(() => {
+    if (openSection && sectionRefs.current[openSection]) {
+      sectionRefs.current[openSection].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    }
+  }, [openSection]);
+
   const sections = [
     { id: 'management', title: '관리기관', content: ['기관 1', '기관 2', '기관 3'] },
     { id: 'participant', title: '참여기관', content: ['참여기관 1', '참여기관 2', '참여기관 3'] },
@@ -19,7 +29,7 @@ function Bottom() {
   ];
 
   return (
-    <footer style={styles.footer}>
+    <footer style={styles.bottom}>
       <div style={styles.container}>
         <div style={styles.accordionContainer}>
           {sections.map((section, index) => (
@@ -38,7 +48,10 @@ function Bottom() {
                 <span style={styles.plusIcon}>{openSection === section.id ? '-' : '+'}</span>
               </button>
               {openSection === section.id && (
-                <div style={styles.sectionContent}>
+                <div 
+                  ref={el => sectionRefs.current[section.id] = el}
+                  style={styles.sectionContent}
+                >
                   {section.content.map((item, index) => (
                     <div 
                       key={index} 
@@ -69,10 +82,13 @@ function Bottom() {
 }
 
 const styles = {
-  footer: {
-    backgroundColor: '#f8f8f8',
+  bottom: {
+    bottom: 0,
+    left: 0,
     width: '100%',
-    borderTop: '1px solid #eee'
+    borderTop: '1px solid #E2E8F0',
+    padding: '1rem',
+    zIndex: 10,
   },
   container: {
     maxWidth: '1200px',
@@ -124,7 +140,6 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     padding: '20px',
-    backgroundColor: '#f8f8f8',
   },
   logo: {
     height: '40px',
