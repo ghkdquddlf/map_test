@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import Bottom from '../components/Bottom';
+import Footer from '../components/Footer';
 import PageContainer from '../components/PageContainer';
 
 function UploadHistory() {
   const [selectedItems, setSelectedItems] = useState({});
-  const [hoveredRow, setHoveredRow] = useState(null);
 
   // 체크박스 상태 관리 함수
   const handleCheckboxChange = (id) => {
@@ -67,12 +66,7 @@ function UploadHistory() {
                 {mockData.map((item) => (
                   <tr 
                     key={item.id} 
-                    style={{
-                      ...styles.tr,
-                      ...(hoveredRow === item.id ? styles.trHovered : {})
-                    }}
-                    onMouseEnter={() => setHoveredRow(item.id)}
-                    onMouseLeave={() => setHoveredRow(null)}
+                    style={styles.tr}
                   >
                     <td style={styles.checkboxCell}>
                       <input
@@ -93,7 +87,7 @@ function UploadHistory() {
           </div>
         </div>
       </PageContainer>
-      <Bottom />
+      <Footer />
     </>
   );
 }
@@ -139,11 +133,10 @@ const styles = {
     padding: '0.75rem 1rem',
     textAlign: 'center',
     fontSize: '0.875rem',
-   /* fontWeight: '500',*/
     color: '#64748B',
     backgroundColor: '#FFFFFF',
     whiteSpace: 'nowrap',
-     borderBottom: '1px solid #E2E8F0',
+    borderBottom: '1px solid #E2E8F0',
     position: 'relative',
   },
   thFirst: {
@@ -158,9 +151,6 @@ const styles = {
     cursor: 'pointer',
     transition: 'background-color 0.2s ease',
     textAlign: 'center',
-  },
-  trHovered: {
-    backgroundColor: '#DAE5EB'
   },
   td: {
     padding: '0.75rem 1rem',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Bottom from '../components/Bottom';
+import Footer from '../components/Footer';
 import PageContainer from '../components/PageContainer';
 
 function FileUpload() {
@@ -194,7 +194,7 @@ function FileUpload() {
           </div>
         </div>
       </PageContainer>
-      <Bottom />
+      <Footer />
     </>
   );
 }

@@ -1,15 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function Header() {
+  const { isLoggedIn, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <header style={styles.header}>
       <nav style={styles.nav}>
         <h1 style={styles.title}>자율 농작업 3D 경로 생성 지원 서비스</h1>
         <div style={styles.links}>
-          <Link to="/upload" style={styles.link}>파일 업로드</Link>
-          <Link to="/history" style={styles.link}>업로드 내역</Link>
-          <Link to="/map" style={styles.link}>지도</Link>
+          {isLoggedIn ? (
+            <>
+              <Link to="/upload" style={styles.link}>파일 업로드</Link>
+              <Link to="/history" style={styles.link}>업로드 내역</Link>
+              <Link to="/map" style={styles.link}>지도</Link>
+              <button onClick={handleLogout} style={styles.logoutButton}>로그아웃</button>
+            </>
+          ) : (
+            <span style={styles.guidanceText}>로그인 후 서비스 이용이 가능합니다</span>
+          )}
         </div>
       </nav>
     </header>
@@ -39,13 +55,27 @@ const styles = {
   },
   links: {
     display: 'flex',
-    gap: '2rem'
+    gap: '2rem',
+    alignItems: 'center'
   },
   link: {
-    textDecoration: 'none',
     color: '#000000',
     fontWeight: '1000',
-    padding: '0.5rem',
+    textDecoration: 'none'
+  },
+  logoutButton: {
+    background: 'none',
+    border: 'none',
+    color: '#000000',
+    fontWeight: '1000',
+    cursor: 'pointer',
+    padding: 0,
+    fontSize: 'inherit'
+  },
+  guidanceText: {
+    color: '#666',
+    fontSize: '0.9rem',
+    fontWeight: '500'
   }
 };
 

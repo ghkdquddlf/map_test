@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-function Bottom() {
+function Footer() {
   const [openSection, setOpenSection] = useState(null);
   const sectionRefs = useRef({});
 
@@ -29,7 +29,7 @@ function Bottom() {
   ];
 
   return (
-    <footer style={styles.bottom}>
+    <footer style={styles.footer}>
       <div style={styles.container}>
         <div style={styles.accordionContainer}>
           {sections.map((section, index) => (
@@ -82,7 +82,7 @@ function Bottom() {
 }
 
 const styles = {
-  bottom: {
+  footer: {
     bottom: 0,
     left: 0,
     width: '100%',
@@ -154,4 +154,4 @@ const styles = {
   },
 };
 
-export default Bottom; 
+export default Footer; 
