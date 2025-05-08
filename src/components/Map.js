@@ -9,7 +9,7 @@ function Map({ onCoordinateSelect, markers = [], onAreaCalculated, onMarkerDelet
   const [map, setMap] = useState(null);
   const markersRef = useRef({});
   const polygonRef = useRef(null);
-  const [mapType, setMapType] = useState('normal'); // 'normal' or 'satellite'
+  const [mapType, setMapType] = useState('normal'); // 'normal', 'satellite', 'hybrid'
 
   // 스크립트 로드
   useEffect(() => {
@@ -211,8 +211,11 @@ function Map({ onCoordinateSelect, markers = [], onAreaCalculated, onMarkerDelet
     if (!map || !window.naver) return;
 
     const { naver } = window;
-    if (type === 'satellite') {
+    if (type === 'hybrid') {
       map.setMapTypeId(naver.maps.MapTypeId.HYBRID); // HYBRID: 위성+오버레이
+      setMapType('hybrid');
+    } else if (type === 'satellite') {
+      map.setMapTypeId(naver.maps.MapTypeId.SATELLITE); // SATELLITE: 위성지도
       setMapType('satellite');
     } else {
       map.setMapTypeId(naver.maps.MapTypeId.NORMAL);
@@ -245,6 +248,16 @@ function Map({ onCoordinateSelect, markers = [], onAreaCalculated, onMarkerDelet
           }}
         >
           위성지도
+        </button>
+        <button
+          onClick={() => changeMapType('hybrid')}
+          style={{
+            ...styles.typeButton,
+            backgroundColor: mapType === 'hybrid' ? '#0B1C40' : '#ffffff',
+            color: mapType === 'hybrid' ? '#ffffff' : '#0B1C40',
+          }}
+        >
+          하이브리드 지도
         </button>
       </div>
       {/* 드롭박스: 지도 종류 토글 바로 아래 */}
@@ -353,7 +366,7 @@ const styles = {
     position: 'absolute',
     top: '10px',
     right: '10px',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent',
     borderRadius: '8px',
     padding: '5px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
@@ -377,7 +390,7 @@ const styles = {
     position: 'absolute',
     bottom: '20px',
     right: '10px',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent',
     borderRadius: '8px',
     padding: '5px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',

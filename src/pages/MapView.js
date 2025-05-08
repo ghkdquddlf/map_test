@@ -128,7 +128,11 @@ function MapView() {
       </div>
       <div style={styles.sideMenu}>
         <div style={styles.titleSection}>
-          <h3 style={styles.projectTitle}>(프로젝트명)</h3>
+          <h3 style={styles.projectTitle}>
+            {selectedAreaId !== 'all' 
+              ? areas.find(a => String(a.id) === String(selectedAreaId))?.name || '(프로젝트명)'
+              : '(프로젝트명)'}
+          </h3>
         </div>
 
         <div style={styles.scrollableContent}>
@@ -217,7 +221,9 @@ function MapView() {
             <div style={styles.selectBox}>
               <label>파일형식</label>
               <select style={styles.select} defaultValue="json">
-                <option value="json">json</option>
+                <option value="json">JSON</option>
+                <option value="kml">KML</option>
+                <option value="csv">CSV</option>
               </select>
             </div>
             <button style={styles.downloadButton}>다운로드</button>
