@@ -68,6 +68,36 @@ function MapView() {
     setEditMode('none');
   };
 
+  const handleDownload = () => {
+    const selectedArea = areas.find(a => String(a.id) === String(selectedAreaId));
+    if (!selectedArea) return;
+
+    // Convert coordinates array to POINT format
+    const pointData = {};
+    selectedArea.coordinates.forEach((coord, index) => {
+      pointData[`POINT${index + 1}`] = {
+        lat: coord.lat,
+        lng: coord.lng
+      };
+    });
+
+    const data = {
+      name: selectedArea.name,
+      points: pointData,
+      area: selectedArea.area
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${selectedArea.name}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleAreaSelect = (e) => {
     setSelectedAreaId(e.target.value);
   };
@@ -226,23 +256,33 @@ function MapView() {
                 <option value="csv">CSV</option>
               </select>
             </div>
-            <button style={styles.downloadButton}>다운로드</button>
+            <button style={styles.downloadButton} onClick={handleDownload}>다운로드</button>
           </div>
         </div>
         {showAliasModal && (
           <div style={styles.modalOverlay}>
             <div style={styles.modalContent}>
-              <h4>영역 별칭을 입력하세요</h4>
+              <h4 style={styles.modalTitle}>영역 별칭을 입력하세요</h4>
               <input 
                 type="text" 
                 value={aliasInput} 
                 onChange={e => setAliasInput(e.target.value)}
-                style={styles.input}
+                style={styles.modalInput}
                 placeholder="예: 논동쪽, 밭A 등"
               />
-              <div style={{display:'flex', gap:'10px', marginTop:'15px'}}>
-                <button style={styles.downloadButton} onClick={handleAliasSave}>저장</button>
-                <button style={styles.downloadButton} onClick={handleAliasCancel}>취소</button>
+              <div style={styles.modalButtonGroup}>
+                <button 
+                  style={{...styles.modalButton, ...styles.modalSaveButton}} 
+                  onClick={handleAliasSave}
+                >
+                  저장
+                </button>
+                <button 
+                  style={{...styles.modalButton, ...styles.modalCancelButton}} 
+                  onClick={handleAliasCancel}
+                >
+                  취소
+                </button>
               </div>
             </div>
           </div>
@@ -447,7 +487,7 @@ const styles = {
   modalOverlay: {
     position: 'fixed',
     top: 0, left: 0, right: 0, bottom: 0,
-    background: 'rgba(0,0,0,0.3)',
+    background: 'rgba(0,0,0,0.5)',
     zIndex: 1000,
     display: 'flex',
     alignItems: 'center',
@@ -458,10 +498,57 @@ const styles = {
     borderRadius: '12px',
     padding: '30px 24px',
     minWidth: '300px',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    gap: '20px',
+  },
+  modalTitle: {
+    fontSize: '18px',
+    fontWeight: '600',
+    color: '#333',
+    margin: 0,
+    textAlign: 'center',
+  },
+  modalInput: {
+    width: '100%',
+    padding: '12px',
+    border: '2px solid #ddd',
+    borderRadius: '8px',
+    fontSize: '14px',
+    outline: 'none',
+    transition: 'border-color 0.2s',
+    '&:focus': {
+      borderColor: '#0B1C40',
+    },
+  },
+  modalButtonGroup: {
+    display: 'flex',
+    gap: '10px',
+    width: '100%',
+  },
+  modalButton: {
+    flex: 1,
+    padding: '12px',
+    border: 'none',
+    borderRadius: '8px',
+    fontSize: '14px',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+  },
+  modalSaveButton: {
+    backgroundColor: '#0B1C40',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: '#0a1833',
+    },
+  },
+  modalCancelButton: {
+    backgroundColor: '#f1f1f1',
+    color: '#333',
+    '&:hover': {
+      backgroundColor: '#e5e5e5',
+    },
   },
   areaDropdown: {
     margin: '10px 0',
