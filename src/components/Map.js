@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { FaPencilAlt, FaTrash, FaEdit } from 'react-icons/fa';
+import { FaPencilAlt, FaTrash, FaEdit, FaPlus } from 'react-icons/fa';
 
-function Map({ onCoordinateSelect, markers = [], onAreaCalculated, onMarkerDelete, areaDropdown, isAliasModalOpen, editMode, setEditMode }) {
+function Map({ onCoordinateSelect, markers = [], onAreaCalculated, onMarkerDelete, areaDropdown, isAliasModalOpen, editMode, setEditMode, onAddClick }) {
   const mapElement = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -269,6 +269,18 @@ function Map({ onCoordinateSelect, markers = [], onAreaCalculated, onMarkerDelet
       {/* 편집 도구 컨트롤 */}
       <div style={styles.editTools}>
         <button
+          onClick={onAddClick}
+          style={{
+            ...styles.toolButton,
+            backgroundColor: '#ffffff',
+            color: '#0B1C40',
+          }}
+          title="추가"
+          disabled={isAliasModalOpen}
+        >
+          <FaPlus />
+        </button>
+        <button
           onClick={() => setEditMode(editMode === 'draw' ? 'none' : 'draw')}
           style={{
             ...styles.toolButton,
@@ -331,7 +343,7 @@ const styles = {
   },
   map: {
     width: '100%',
-    height: '90vh',
+    height: '100vh',
   },
   loading: {
     position: 'absolute',
@@ -388,7 +400,7 @@ const styles = {
   },
   editTools: {
     position: 'absolute',
-    bottom: '20px',
+    bottom: '5px',
     right: '10px',
     backgroundColor: 'transparent',
     borderRadius: '8px',

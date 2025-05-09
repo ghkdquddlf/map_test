@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Map from '../components/Map';
+import InputModal from '../components/InputModal';
+import ConfirmModal from '../components/ConfirmModal';
 
 function MapView() {
   const [coordinates, setCoordinates] = useState([]);
@@ -9,32 +11,75 @@ function MapView() {
   const [aliasInput, setAliasInput] = useState('');
   const [selectedAreaId, setSelectedAreaId] = useState('all');
   const [editMode, setEditMode] = useState('none');
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const handleCoordinateSelect = (coords) => {
-    console.log('New coordinate selected:', coords); // 디버깅용 로그
-    setCoordinates(prev => {
-      let newCoordinates;
-      if (coords.id) {
-        // 기존 마커의 위치 업데이트
-        newCoordinates = prev.map(coord => 
-          coord.id === coords.id 
-            ? { ...coord, lat: coords.lat, lng: coords.lng }
-            : coord
-        );
-      } else {
-        // 새로운 마커 추가
-        newCoordinates = [...prev, {
-          id: prev.length + 1,
-          ...coords
-        }];
-      }
-      console.log('Updated coordinates:', newCoordinates); // 디버깅용 로그
-      return newCoordinates;
-    });
+    console.log('New coordinate selected:', coords);
+    if (selectedAreaId === 'all') {
+      setCoordinates(prev => {
+        let newCoordinates;
+        if (coords.id) {
+          // 기존 마커의 위치 업데이트
+          newCoordinates = prev.map(coord => 
+            coord.id === coords.id 
+              ? { ...coord, lat: coords.lat, lng: coords.lng }
+              : coord
+          );
+        } else {
+          // 새로운 마커 추가
+          newCoordinates = [...prev, {
+            id: prev.length + 1,
+            ...coords
+          }];
+        }
+        console.log('Updated coordinates:', newCoordinates);
+        return newCoordinates;
+      });
+    } else {
+      // 저장된 영역의 마커 수정
+      setAreas(prev => prev.map(area => {
+        if (String(area.id) === String(selectedAreaId)) {
+          if (coords.id) {
+            // 기존 마커의 위치 업데이트
+            return {
+              ...area,
+              coordinates: area.coordinates.map(coord =>
+                coord.id === coords.id
+                  ? { ...coord, lat: coords.lat, lng: coords.lng }
+                  : coord
+              )
+            };
+          } else {
+            // 새로운 마커 추가
+            return {
+              ...area,
+              coordinates: [...area.coordinates, {
+                id: area.coordinates.length + 1,
+                ...coords
+              }]
+            };
+          }
+        }
+        return area;
+      }));
+    }
   };
 
   const handleMarkerDelete = (id) => {
-    setCoordinates(prev => prev.filter(coord => coord.id !== id));
+    if (selectedAreaId === 'all') {
+      setCoordinates(prev => prev.filter(coord => coord.id !== id));
+    } else {
+      // 저장된 영역의 마커 삭제
+      setAreas(prev => prev.map(area => {
+        if (String(area.id) === String(selectedAreaId)) {
+          return {
+            ...area,
+            coordinates: area.coordinates.filter(coord => coord.id !== id)
+          };
+        }
+        return area;
+      }));
+    }
   };
 
   const handleAreaCalculated = (calculatedArea) => {
@@ -53,7 +98,7 @@ function MapView() {
         id: prev.length + 1,
         name: aliasInput,
         coordinates,
-        area
+        area: `${area.toFixed(2)} m²`
       }
     ]);
     setCoordinates([]);
@@ -104,6 +149,24 @@ function MapView() {
     setSelectedAreaId(e.target.value);
   };
 
+  const handleAddClick = () => {
+    if (selectedAreaId !== 'all') {
+      setShowAddModal(true);
+    } else {
+      setSelectedAreaId('all');
+    }
+  };
+
+  const handleAddModalConfirm = () => {
+    setSelectedAreaId('all');
+    setEditMode('draw');
+    setShowAddModal(false);
+  };
+
+  const handleAddModalCancel = () => {
+    setShowAddModal(false);
+  };
+
   let markersToShow = coordinates;
   if (selectedAreaId !== 'all') {
     const found = areas.find(a => String(a.id) === String(selectedAreaId));
@@ -111,30 +174,9 @@ function MapView() {
     else markersToShow = [];
   }
 
-  // 면적을 적절한 단위로 변환하는 함수
+  // 면적을 m² 단위로 변환하는 함수
   const formatArea = (areaInSquareMeters) => {
-    if (areaInSquareMeters < 1) return '0 m²';
-    if (areaInSquareMeters < 10000) {
-      return `${areaInSquareMeters.toFixed(2)} m²`;
-    } else {
-      const areaInHectares = areaInSquareMeters / 10000;
-      return `${areaInHectares.toFixed(2)} ha`;
-    }
-  };
-
-  // editMode를 변경할 때 추가 동작 (draw 모드 진입 시 드롭박스 초기화)
-  const handleSetEditMode = (mode) => {
-    setEditMode(prev => {
-      // 드롭박스에서 특정 영역이 선택된 상태에서 수정/삭제 시 alert
-      if (selectedAreaId !== 'all' && (mode === 'edit' || mode === 'delete')) {
-        alert('한번 저장된 영역은 수정이 불가능합니다. 새로운 영역을 지정해주세요.');
-        return prev; // 상태 변경하지 않음
-      }
-      if (mode === 'draw' && prev !== 'draw') {
-        setSelectedAreaId('all');
-      }
-      return mode;
-    });
+    return `${areaInSquareMeters.toFixed(2)} m²`;
   };
 
   return (
@@ -147,7 +189,7 @@ function MapView() {
           onMarkerDelete={handleMarkerDelete}
           areaDropdown={
             <select style={styles.areaDropdown} value={selectedAreaId} onChange={handleAreaSelect}>
-              <option value="all">전체 영역 보기</option>
+              <option value="all">새로운 영역 생성</option>
               {areas.map(area => (
                 <option key={area.id} value={area.id}>{area.name}</option>
               ))}
@@ -155,7 +197,8 @@ function MapView() {
           }
           isAliasModalOpen={showAliasModal}
           editMode={editMode}
-          setEditMode={handleSetEditMode}
+          setEditMode={setEditMode}
+          onAddClick={handleAddClick}
         />
       </div>
       <div style={styles.sideMenu}>
@@ -262,32 +305,25 @@ function MapView() {
           </div>
         </div>
         {showAliasModal && (
-          <div style={styles.modalOverlay}>
-            <div style={styles.modalContent}>
-              <h4 style={styles.modalTitle}>영역 별칭을 입력하세요</h4>
-              <input 
-                type="text" 
-                value={aliasInput} 
-                onChange={e => setAliasInput(e.target.value)}
-                style={styles.modalInput}
-                placeholder="예: 논동쪽, 밭A 등"
-              />
-              <div style={styles.modalButtonGroup}>
-                <button 
-                  style={{...styles.modalButton, ...styles.modalSaveButton}} 
-                  onClick={handleAliasSave}
-                >
-                  저장
-                </button>
-                <button 
-                  style={{...styles.modalButton, ...styles.modalCancelButton}} 
-                  onClick={handleAliasCancel}
-                >
-                  취소
-                </button>
-              </div>
-            </div>
-          </div>
+          <InputModal
+            isOpen={showAliasModal}
+            title="영역 별칭을 입력하세요"
+            inputValue={aliasInput}
+            onInputChange={e => setAliasInput(e.target.value)}
+            onConfirm={handleAliasSave}
+            onCancel={handleAliasCancel}
+            placeholder="예: 논동쪽, 밭A 등"
+            styles={styles}
+          />
+        )}
+        {showAddModal && (
+          <ConfirmModal
+            isOpen={showAddModal}
+            title="새로운 영역을 생성하시겠습니까?"
+            onConfirm={handleAddModalConfirm}
+            onCancel={handleAddModalCancel}
+            styles={styles}
+          />
         )}
       </div>
     </div>
@@ -305,7 +341,7 @@ const styles = {
     top: '20px',
     left: '20px',
     width: '300px',
-    height: '85vh',
+    height: '88vh',
     zIndex: 2,
     borderRadius: '20px',
     backgroundColor: 'white',
@@ -485,72 +521,6 @@ const styles = {
     fontSize: '16px',
     fontWeight: '700',
     color: '#ff69b4',
-  },
-  modalOverlay: {
-    position: 'fixed',
-    top: 0, left: 0, right: 0, bottom: 0,
-    background: 'rgba(0,0,0,0.5)',
-    zIndex: 1000,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  modalContent: {
-    background: 'white',
-    borderRadius: '12px',
-    padding: '30px 24px',
-    minWidth: '300px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-  },
-  modalTitle: {
-    fontSize: '18px',
-    fontWeight: '600',
-    color: '#333',
-    margin: 0,
-    textAlign: 'center',
-  },
-  modalInput: {
-    width: '100%',
-    padding: '12px',
-    border: '2px solid #ddd',
-    borderRadius: '8px',
-    fontSize: '14px',
-    outline: 'none',
-    transition: 'border-color 0.2s',
-    '&:focus': {
-      borderColor: '#0B1C40',
-    },
-  },
-  modalButtonGroup: {
-    display: 'flex',
-    gap: '10px',
-    width: '100%',
-  },
-  modalButton: {
-    flex: 1,
-    padding: '12px',
-    border: 'none',
-    borderRadius: '8px',
-    fontSize: '14px',
-    cursor: 'pointer',
-    transition: 'background-color 0.2s',
-  },
-  modalSaveButton: {
-    backgroundColor: '#0B1C40',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#0a1833',
-    },
-  },
-  modalCancelButton: {
-    backgroundColor: '#f1f1f1',
-    color: '#333',
-    '&:hover': {
-      backgroundColor: '#e5e5e5',
-    },
   },
   areaDropdown: {
     margin: '10px 0',
