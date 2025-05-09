@@ -83,8 +83,10 @@ function MapView() {
 
     const data = {
       name: selectedArea.name,
-      points: pointData,
-      area: selectedArea.area
+      "주행가능한영역": {
+        ...pointData,
+        area: selectedArea.area
+      }
     };
 
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
