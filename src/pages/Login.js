@@ -26,7 +26,7 @@ function Login() {
 
     if (formData.email === tempEmail && formData.password === tempPassword) {
       login();
-      navigate('/upload');
+      navigate('/history');
       alert('로그인 성공!');
     } else {
       alert('이메일 또는 비밀번호가 일치하지 않습니다.');
