@@ -343,7 +343,7 @@ const styles = {
   },
   map: {
     width: '100%',
-    height: '100vh',
+    height: '92.8vh',
   },
   loading: {
     position: 'absolute',

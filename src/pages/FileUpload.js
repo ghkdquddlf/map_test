@@ -563,21 +563,24 @@ const tableStyles = {
     background: '#F8FAFC',
     fontWeight: '600',
     fontSize: '0.95rem',
+    minWidth: '100px',
   },
   td: {
     border: '1px solid #E2E8F0',
     padding: '0.75rem',
     textAlign: 'center',
     fontSize: '0.95rem',
-    height: '48px',
+    height: '63px',
+    minWidth: '100px',
   },
   emptyTd: {
     border: '1px solid #E2E8F0',
     padding: '0.75rem',
     textAlign: 'center',
     fontSize: '0.95rem',
-    height: '48px',
+    height: '58px',
     color: 'transparent',
+    minWidth: '100px',
   },
   input: {
     width: '100%',
@@ -593,6 +596,7 @@ const tableStyles = {
     boxSizing: 'border-box',
     textAlign: 'center',
     height: '36px',
+    minWidth: '80px',
   },
   select: {
     width: '100%',
@@ -613,6 +617,7 @@ const tableStyles = {
     paddingRight: '2rem',
     textAlign: 'center',
     height: '36px',
+    minWidth: '120px',
   }
 };
 
