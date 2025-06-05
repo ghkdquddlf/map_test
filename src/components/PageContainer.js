@@ -56,8 +56,7 @@ const styles = {
     backgroundColor: '#F3F8FB',
     borderRadius: '12px',
     boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-    overflow: 'auto',
-   /* height: 'calc(100vh - clamp(200px, 25vh, 250px))',*/
+    overflow: 'visible',
     maxWidth: '100%',
   },
   dashboardHeader: {

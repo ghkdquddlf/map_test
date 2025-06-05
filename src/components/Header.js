@@ -18,9 +18,7 @@ function Header() {
         <div style={styles.links}>
           {isLoggedIn ? (
             <>
-              <Link to="/upload" style={styles.link}>파일 업로드</Link>
               <Link to="/history" style={styles.link}>업로드 내역</Link>
-              <Link to="/map" style={styles.link}>지도</Link>
               <button onClick={handleLogout} style={styles.logoutButton}>로그아웃</button>
             </>
           ) : (

@@ -56,6 +56,54 @@ function UploadHistory() {
       date: '2025/03/21',
       fileName: '32645787_20250321.pcd',
       auth: '나만 보기'
+    },
+    {
+      id: 1,
+      projectName: '데모 프로젝트',
+      description: '데모용 전광판 hdmap 작업',
+      date: '2025/03/21',
+      fileName: '32645787_20250321.pcd',
+      auth: '전체 공개'
+    },
+    {
+      id: 2,
+      projectName: '데모 프로젝트',
+      description: '데모용 전광판 hdmap 작업',
+      date: '2025/03/21',
+      fileName: '32645787_20250321.pcd',
+      auth: '조직원만'
+    },
+    {
+      id: 3,
+      projectName: '데모 프로젝트',
+      description: '데모용 전광판 hdmap 작업',
+      date: '2025/03/21',
+      fileName: '32645787_20250321.pcd',
+      auth: '나만 보기'
+    },
+    {
+      id: 1,
+      projectName: '데모 프로젝트',
+      description: '데모용 전광판 hdmap 작업',
+      date: '2025/03/21',
+      fileName: '32645787_20250321.pcd',
+      auth: '전체 공개'
+    },
+    {
+      id: 2,
+      projectName: '데모 프로젝트',
+      description: '데모용 전광판 hdmap 작업',
+      date: '2025/03/21',
+      fileName: '32645787_20250321.pcd',
+      auth: '조직원만'
+    },
+    {
+      id: 3,
+      projectName: '데모 프로젝트',
+      description: '데모용 전광판 hdmap 작업',
+      date: '2025/03/21',
+      fileName: '32645787_20250321.pcd',
+      auth: '나만 보기'
     }
   ];
 
@@ -270,7 +318,9 @@ const styles = {
     gap: '0.5rem',
   },
   tableContainer: {
-    overflowX: 'auto',
+    overflowY: 'auto',
+    maxHeight: 'calc(65vh - 160px)', // header(60px) + footer(60px) + 여유(40px)
+    minHeight: 'calc(65vh - 160px)',
     WebkitOverflowScrolling: 'touch',
     padding: '1rem 0',
   },
@@ -289,7 +339,9 @@ const styles = {
     backgroundColor: '#FFFFFF',
     whiteSpace: 'nowrap',
     borderBottom: '1px solid #E2E8F0',
-    position: 'relative',
+    position: 'sticky',
+    top: 0,
+    zIndex: 2,
   },
   thFirst: {
     borderTopLeftRadius: '20px',
